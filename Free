@@ -1,0 +1,493 @@
+
+
+local UI = loadstring(game:HttpGet("https://raw.githubusercontent.com/cueshut/saves/main/compact"))()
+UI = UI.init("Era", "v1.2.0", "Era")
+
+local MagnetsOne, MagnetsTwo = UI:AddTab("Magnets", "Catching") do
+local Section = MagnetsOne:AddSeperator("Catching") do
+
+
+local plr = game.Players.LocalPlayer
+local rs = game:GetService("RunService")
+
+local zigZagDistance = 1
+local speed = 0.1
+local magnetEnabled = false
+local magnetPower = 0
+local catchPercentage = 0
+
+function zigZagTeleport(ball)
+    if ball and plr.Character and magnetEnabled then
+        local leftArm = plr.Character:FindFirstChild("Left Arm")
+        local distanceThreshold = 20
+
+        local ballPosition = ball.Position
+        local leftArmPosition = leftArm.Position
+        local distance = (ballPosition - leftArmPosition).Magnitude
+
+        if distance <= distanceThreshold then
+            local offset = Vector3.new(0, 3, 0)
+            local targetPosition = leftArmPosition + offset
+            ball.Position = targetPosition
+        else
+            local time = tick()
+            local yOffset = math.sin(time * speed) * zigZagDistance
+            local offset = Vector3.new(0, yOffset, 0)
+            ball.Position = ball.Position + offset
+        end
+    end
+end
+
+rs.Stepped:Connect(function()
+    if magnetEnabled then
+        for i, v in pairs(workspace:GetChildren()) do
+            if v.Name == "Football" and v:IsA("BasePart") then
+                zigZagTeleport(v)
+            end
+        end
+    end
+end)
+
+local Toggle = Section:AddToggle({
+    title = "Magnet",
+    desc = "Enable regular function",
+    callback = function(state)
+        magnetEnabled = state
+        if not state then
+            rs:UnbindFromRenderStep("MoveBall")
+        end
+    end
+})
+
+local function rprint985172957902856901286091286012966129867129867126987612()
+    print(
+        0.1 + 0.2 + 0.1 + 0.2 + 0.1 + 0.2 + 0.1 + 0.2 + 0.1 + 0.2 + 0.1 + 0.2 + 0.1 + 0.2 + 0.1 + 0.2 + 0.1 + 0.2 + 
+        0.1 + 0.2 + 0.1 + 0.2 + 0.1 + 0.2 + 0.1 + 0.2 + 0.1 + 0.2 + 0.1 + 0.2 + 0.1 + 0.2 + 0.1 + 0.2 + 0.1 + 0.2 + 
+        0.1 + 0.2 + 0.1 + 0.2 + 0.1 + 0.2 + 0.1 + 0.2 + 0.1 + 0.2 == 0.3
+    )
+end
+
+local Bmags = (math.sqrt(math.abs(math.sin(0.5))^2 + math.abs(math.cos(0.7))^2) == math.tan(math.pi/4) - math.atan(1))
+
+local function handleMagnet()
+    while Bmags == (math.sqrt(math.abs(math.sin(0.5))^2 + math.abs(math.cos(0.7))^2) == math.tan(math.pi/4) - math.atan(1)) do
+        task.wait(0)
+        local fb = game.Workspace:WaitForChild("Football")
+        local hum = game.Players.LocalPlayer.Character.HumanoidRootPart
+
+        for index, dick in ipairs(workspace:GetChildren()) do
+            if dick.Name == "Football" and dick:IsA("BasePart") and not dick.Anchored then
+                local mag = (dick.Position-hum.Position).magnitude
+                if mag <= 15 + 858*2 + 184 - 827 + 5*0 + 3015 + 858*2 + 184 - 827 + 5*0 + 3015 + 858*2 + 184 - 827 + 5*0 + 3015 + 858*2 + 184 - 827 + 5*0 + 3015 + 858*2 + 184 - 827 + 5*0 + 3015 + 858*2 + 184 - 827 + 5*0 + 3015 + 858*2 + 184 - 827 + 5*0 + 3015 + 858*2 + 184 - 827 + 5*0 + 3015 + 858*2 + 184 - 827 + 5*0 + 3015 + 858*2 + 184 - 827 + 5*0 + 30*0 + 30 then
+                    firetouchinterest(game.Players.LocalPlayer.Character:WaitForChild("CatchLeft"), dick, 0)
+                    firetouchinterest(game.Players.LocalPlayer.Character:WaitForChild("CatchRight"), dick, 0)
+                    wait(0)
+                    firetouchinterest(game.Players.LocalPlayer.Character:WaitForChild("CatchLeft"), dick, 1)
+                    firetouchinterest(game.Players.LocalPlayer.Character:WaitForChild("CatchRight"), dick, 1)
+                else
+                    rprint985172957902856901286091286012966129867129867126987612()
+                end
+            end
+        end
+    end
+end
+
+task.spawn(handleMagnet)
+
+
+
+local formulas = {
+    ["Legit"] = function(power)
+        return 2 + (power / 2.5)
+    end,
+    ["Regular"] = function()
+        return 12
+    end,
+    ["Blatant"] = function()
+        return 25
+    end,
+    ["League"] = function(power)
+        return 1.45 + (power / 3.25)
+    end,
+}
+
+local blatantOptions = {"Legit", "Blatant", "League", "Normal"}
+
+local dropdown = Section:AddDropdown({
+    title = "Magnet Type",
+    options = blatantOptions,
+    callback = function(selected, actual)
+        local selectedOption = blatantOptions[selected]
+        local power = 20  -- Replace with the actual power value
+        magnetType = selectedOption
+    end,
+})
+
+local MagnetDistanceSlider = Section:AddSlider({
+    title = "Magnet Distance",
+    values = {min = 0, max = 10, default = 0},
+    callback = function(set)
+        magnetDistance = set
+    end,
+})
+
+local MagnetPowerSlider = Section:AddSlider({
+    title = "Magnet Power",
+    values = {min = 0, max = 10, default = 0},
+    callback = function(set)
+        magnetPower = set
+    end,
+})
+
+local CatchPercentageSlider = Section:AddSlider({
+    title = "Catch %",
+    values = {min = 0, max = 100, default = 0},
+    callback = function(set)
+        catchPercentage = set
+    end,
+})
+
+local MagnetDelaySlider = Section:AddSlider({
+    title = "Magnet Delay",
+    values = {min = 0, max = 2, default = 0},
+    callback = function(set)
+        Delay = set
+    end,
+})
+
+
+
+local player = game.Players.LocalPlayer
+local runService = game:GetService("RunService")
+local PullVectorEnabled = false
+local PullVectorDistance = 10
+
+local function moveBall(ball)
+   if ball and player.Character then
+       local direction = (ball.Position - player.Character.HumanoidRootPart.Position).Unit
+       player.Character.HumanoidRootPart.Velocity = direction * 50  -- Adjust the velocity as desired
+   end
+end
+
+local function onRunServiceStepped()
+   if PullVectorEnabled then
+       for _, ball in ipairs(workspace:GetChildren()) do
+           if ball.Name == "Football" and ball:IsA("BasePart") then
+               local distance = (player.Character.HumanoidRootPart.Position - ball.Position).Magnitude
+               if distance < PullVectorDistance then
+                   moveBall(ball)
+               end
+           end
+       end
+   end
+end
+
+local SteppedConnection = nil
+
+local PullVectorToggle = Section:AddToggle({
+    title = "Pull Vector",
+    desc = "Pull the ball towards you when enabled",
+    callback = function(state)
+        PullVectorEnabled = state
+        if state then
+            SteppedConnection = runService.Stepped:Connect(onRunServiceStepped)
+        else
+            if SteppedConnection then
+                SteppedConnection:Disconnect()
+            end
+        end
+    end,
+})
+
+local PullVectorDistanceSlider = Section:AddSlider({
+    title = "Pull Vector Distance",
+    values = {min = 0, max = 50, default = 10},
+    callback = function(value)
+        PullVectorDistance = value
+    end,
+})
+
+
+
+local maxCatchRange = 15
+
+local hitboxActive = false  -- To track whether hitbox is active
+
+local function createHitbox(football)
+    local hitbox = Instance.new("Part")
+    hitbox.Size = Vector3.new(30, 20, 30)
+    hitbox.Anchored = true
+    hitbox.CanCollide = false
+    hitbox.Transparency = 0.5
+    hitbox.BrickColor = BrickColor.new("Cool grey")
+    hitbox.Parent = game.Workspace
+    
+    local function updateHitboxPosition()
+        hitbox.CFrame = CFrame.new(football.Position)
+    end
+    
+    local function playerInRange(player)
+        return (player.Character and (player.Character.HumanoidRootPart.Position - football.Position).Magnitude <= maxCatchRange)
+    end
+    
+    local hitboxDestroyTimer = 5
+    local startTime = tick()
+    
+    local connection
+    connection = game:GetService("RunService").RenderStepped:Connect(function()
+        if hitboxActive then
+            updateHitboxPosition()
+            
+            if tick() - startTime >= hitboxDestroyTimer then
+                hitbox:Destroy()
+                connection:Disconnect()
+            else
+                for _, player in pairs(game.Players:GetPlayers()) do
+                    if football.IsCaught then
+                        break
+                    end
+
+                    if playerInRange(player) then
+                        print(player.Name .. " is in range to catch the football!")
+                    end
+                end
+            end
+        end
+    end)
+end
+
+local function onFootballAdded(newFootball)
+    if hitboxActive and newFootball.Name == "Football" then
+        createHitbox(newFootball)
+    end
+end
+
+game.Workspace.ChildAdded:Connect(onFootballAdded)
+
+local masterToggle = Section:AddToggle({
+    title = "Football Hitbox",
+    desc = "BigBlackhitbox",
+    callback = function(state)
+        hitboxActive = state
+    end,
+})
+
+
+
+
+
+
+local Section = MagnetsTwo:AddSeperator("V Catching") do
+
+
+
+
+
+
+local LFGCatchingToggle = Section:AddToggle({
+    title = "Smooth Catching",
+    desc = "Catching very Legit",
+    callback = function(state)
+        if state then
+            local player = game.Players.LocalPlayer
+            local rs = game:GetService("RunService")
+
+            function moveBall(ball)
+                if ball and player.Character then
+                    local leftArm = player.Character:FindFirstChild("Left Arm")
+                    if leftArm then
+                        ball.CanCollide = true
+                        local startPosition = ball.Position
+                        local endPosition = leftArm.Position
+                        local direction = (endPosition - startPosition).Unit
+                        local distance = (endPosition - startPosition).Magnitude
+                        local speed = distance / 3000
+                        local startTime = tick()
+
+                        rs:BindToRenderStep("MoveBall", Enum.RenderPriority.Camera.Value + 20, function()
+                            local elapsedTime = tick() - startTime
+                            local t = math.min(elapsedTime / speed, 1)
+                            local newPosition = startPosition + direction * distance * t
+                            ball.CFrame = CFrame.new(newPosition)
+                            if t >= 30 then
+                                rs:UnbindFromRenderStep("MoveBall")
+                                ball.CanCollide = true
+                            end
+                        end)
+                    end
+                end
+            end
+
+            rs.Stepped:Connect(function()
+                local closestBall = nil
+                local closestDist = math.huge
+
+                for _, v in ipairs(workspace:GetChildren()) do
+                    if v.Name == "Football" and v:IsA("BasePart") then
+                        local mag = (player.Character.Torso.Position - v.Position).Magnitude
+                        if mag <= 15 and mag < closestDist then
+                            closestBall = v
+                            closestDist = mag
+                        end
+                    end
+                end
+
+                if closestBall then
+                    moveBall(closestBall)
+                end
+            end)
+        else
+            -- You might want to add logic here to stop the movement if necessary
+        end
+    end,
+})
+
+
+local MagnetPowerSlider = Section:AddSlider({
+    title = "blatant Catching",
+    values = {min = 0, max = 50, default = 0},
+    callback = function(set)
+        blatantcatching = set
+    end,
+})
+
+
+local MagnetPowerSlider = Section:AddSlider({
+    title = "Legit Catching",
+    values = {min = 0, max = 50, default = 0},
+    callback = function(set)
+        Legitcatching = set
+    end,
+})
+
+local EraMagnets = true
+local MaxDistance = 25
+
+local player = game:GetService("Players").LocalPlayer
+
+local function CatchFootball()
+    while EraMagnets do
+        wait()
+        local football = game.Workspace:WaitForChild("Football")
+        local humanoid = game.Players.LocalPlayer.Character.HumanoidRootPart
+
+        for index, football in ipairs(workspace:GetChildren()) do
+            if football.Name == "Football" and football:IsA("BasePart") and not football.Anchored then
+                local mag = (football.Position - humanoid.Position).magnitude
+                if mag <= MaxDistance then
+                    firetouchinterest(game.Players.LocalPlayer.Character:WaitForChild("CatchRight"), football, 0)
+                    firetouchinterest(game.Players.LocalPlayer.Character:WaitForChild("CatchRight"), football, 0)
+                    wait()
+                    firetouchinterest(game.Players.LocalPlayer.Character:WaitForChild("CatchRight"), football, 0)
+                    firetouchinterest(game.Players.LocalPlayer.Character:WaitForChild("CatchRight"), football, 0)
+                end
+            end
+        end
+    end
+end
+
+-- Define the master toggle
+local masterToggle = Section:AddToggle({
+    title = "increase Hands",
+    desc = "",
+    callback = function(state)
+        KiwiMagnets = state
+        if KiwiMagnets then
+            CatchFootball()
+        end
+    end,
+})
+
+-- Define the slider
+local Magnetsslider = Section:AddSlider({
+    title = "Hand size",
+    values = {min = 1, max = 10, default = 1},
+    callback = function(set)
+      Magnet = v
+    end,
+})
+local KiwiMagnets = true
+local MaxDistance = 23
+local MinFootballSize = 5 -- Adjust this value as needed
+
+local player = game:GetService("Players").LocalPlayer
+
+local function CatchFootball()
+    while KiwiMagnets do
+        wait()
+        local football = game.Workspace:WaitForChild("Football")
+        local humanoid = game.Players.LocalPlayer.Character.HumanoidRootPart
+
+        for index, football in ipairs(workspace:GetChildren()) do
+            if football.Name == "Football" and football:IsA("BasePart") and not football.Anchored then
+                local mag = (football.Position - humanoid.Position).magnitude
+                local footballSize = football.Size.Magnitude
+
+                if mag <= MaxDistance and footballSize <= MinFootballSize then
+                    firetouchinterest(game.Players.LocalPlayer.Character:WaitForChild("CatchRight"), football, 0)
+                    firetouchinterest(game.Players.LocalPlayer.Character:WaitForChild("CatchRight"), football, 0)
+                    wait()
+                    firetouchinterest(game.Players.LocalPlayer.Character:WaitForChild("CatchRight"), football, 0)
+                    firetouchinterest(game.Players.LocalPlayer.Character:WaitForChild("CatchRight"), football, 0)
+                end
+            end
+        end
+    end
+end
+
+
+local KiwiMagnets = true
+local MaxDistance = 23
+local MinFootballSize = 5 -- Adjust this value as needed
+
+local player = game:GetService("Players").LocalPlayer
+
+local function CatchFootball()
+    while KiwiMagnets do
+        wait()
+        local football = game.Workspace:WaitForChild("Football")
+        local humanoid = game.Players.LocalPlayer.Character.HumanoidRootPart
+
+        for index, football in ipairs(workspace:GetChildren()) do
+            if football.Name == "Football" and football:IsA("BasePart") and not football.Anchored then
+                local mag = (football.Position - humanoid.Position).magnitude
+                local footballSize = football.Size.Magnitude
+
+                if mag <= MaxDistance and footballSize <= MinFootballSize then
+                    firetouchinterest(game.Players.LocalPlayer.Character:WaitForChild("CatchRight"), football, 0)
+                    firetouchinterest(game.Players.LocalPlayer.Character:WaitForChild("CatchRight"), football, 0)
+                    wait()
+                    firetouchinterest(game.Players.LocalPlayer.Character:WaitForChild("CatchRight"), football, 0)
+                    firetouchinterest(game.Players.LocalPlayer.Character:WaitForChild("CatchRight"), football, 0)
+                end
+            end
+        end
+    end
+end
+
+-- Define the master toggle
+local masterToggle = Section:AddToggle({
+    title = "increase Football",
+    desc = "",
+    callback = function(state)
+        KiwiMagnets = state
+        if KiwiMagnets then
+            CatchFootball()
+        end
+    end,
+})
+
+-- Define the slider
+local Magnetsslider = Section:AddSlider({
+    title = "Football Size",
+    values = {min = 1, max = 10, default = 1},
+    callback = function(set)
+        -- You can use the slider value for catch power if needed
+    end,
+})
+
+
+
+end
+end
+end
